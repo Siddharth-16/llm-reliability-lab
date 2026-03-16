@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 .venv/
 .env
-.pytest_cache/
-.streamlit/
+build/
+dist/
 *.egg-info/
+local_chroma/
+reports/
