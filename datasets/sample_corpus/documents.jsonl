@@ -1,0 +1,3 @@
+{"doc_id":"doc_001","title":"Security Policy","text":"All employees must use multi-factor authentication for company systems.","source":"security_handbook"}
+{"doc_id":"doc_002","title":"Expense Policy","text":"Meals are reimbursable up to $75 per day when traveling for work.","source":"finance_manual"}
+{"doc_id":"doc_003","title":"Incident Response","text":"Severity 1 incidents require paging the on-call manager immediately.","source":"security_runbook"}

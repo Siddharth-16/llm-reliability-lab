@@ -1,0 +1,2 @@
+{"sample_id":"q_001","question":"Is MFA required for company systems?","ground_truth_answer":"Yes. All employees must use multi-factor authentication.","reference_doc_ids":["doc_001"]}
+{"sample_id":"q_002","question":"What is the meal reimbursement limit?","ground_truth_answer":"Meals are reimbursable up to $75 per day.","reference_doc_ids":["doc_002"]}
