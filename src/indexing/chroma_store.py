@@ -1,9 +1,11 @@
+from functools import lru_cache
 from typing import Iterable
-from langchain_core.documents import Document as LangChainDocument
 from langchain_chroma import Chroma
+from langchain_core.documents import Document as LangChainDocument
 from src.config.settings import settings
 from src.indexing.embedder import get_embedding_model
 
+@lru_cache(maxsize=4)
 def get_vector_store(collection_name: str = "llm_reliability_lab") -> Chroma:
     return Chroma(
         collection_name=collection_name,
