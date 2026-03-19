@@ -40,6 +40,7 @@ def run_evaluation(dataset_path: str) -> dict:
         "avg_exact_match": sum(r["metrics"].get("exact_match", 0) for r in results)
         / len(results),
         "latency_sec": round(total_time, 2),
+        "avg_token_f1": sum(r["metrics"].get("token_f1", 0) for r in results) / len(results),
     }
 
     return {
