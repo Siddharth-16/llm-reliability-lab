@@ -4,13 +4,19 @@ from src.rag.prompt_builder import build_rag_prompt
 from src.rag.retriever import retrieve
 
 def run_rag(query: str, k: int = 3) -> dict:
-    start = perf_counter()
+    overall_start = perf_counter()
+    retrieval_start = perf_counter()
     retrieved_docs = retrieve(query, k=k)
+    retrieval_latency_ms = round((perf_counter() - retrieval_start) * 1000, 2)
+
     contexts = [doc.page_content for doc in retrieved_docs]
     prompt = build_rag_prompt(query, contexts)
-    answer = generate_answer(prompt)
 
-    latency_ms = round((perf_counter() - start) * 1000, 2)
+    generation_start = perf_counter()
+    answer = generate_answer(prompt)
+    generation_latency_ms = round((perf_counter() - generation_start) * 1000, 2)
+
+    total_latency_ms = round((perf_counter() - overall_start) * 1000, 2)
 
     return {
         "question": query,
@@ -23,5 +29,7 @@ def run_rag(query: str, k: int = 3) -> dict:
         ],
         "prompt": prompt,
         "answer": answer,
-        "latency_ms": latency_ms,
+        "latency_ms": total_latency_ms,
+        "retrieval_latency_ms": retrieval_latency_ms,
+        "generation_latency_ms": generation_latency_ms,
     }

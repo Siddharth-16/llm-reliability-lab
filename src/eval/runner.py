@@ -23,6 +23,9 @@ def run_evaluation(dataset_path: str) -> dict:
             "ground_truth": sample.ground_truth_answer,
             "prediction": rag_output["answer"],
             "retrieved_docs": rag_output["retrieved_docs"],
+            "latency_ms": rag_output["latency_ms"],
+            "retrieval_latency_ms": rag_output["retrieval_latency_ms"],
+            "generation_latency_ms": rag_output["generation_latency_ms"],
             "metrics": {
                 **retrieval_metrics,
                 **answer_metrics,
@@ -35,12 +38,13 @@ def run_evaluation(dataset_path: str) -> dict:
 
     summary = {
         "num_samples": len(results),
-        "avg_recall": sum(r["metrics"]["retrieval_recall_at_k"] for r in results)
-        / len(results),
-        "avg_exact_match": sum(r["metrics"].get("exact_match", 0) for r in results)
-        / len(results),
-        "latency_sec": round(total_time, 2),
+        "avg_recall": sum(r["metrics"]["retrieval_recall_at_k"] for r in results) / len(results),
+        "avg_exact_match": sum(r["metrics"].get("exact_match", 0) for r in results) / len(results),
         "avg_token_f1": sum(r["metrics"].get("token_f1", 0) for r in results) / len(results),
+        "avg_latency_ms": sum(r["latency_ms"] for r in results) / len(results),
+        "avg_retrieval_latency_ms": sum(r["retrieval_latency_ms"] for r in results) / len(results),
+        "avg_generation_latency_ms": sum(r["generation_latency_ms"] for r in results) / len(results),
+        "latency_sec": round(total_time, 2),
     }
 
     return {
