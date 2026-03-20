@@ -7,3 +7,4 @@ dist/
 *.egg-info/
 local_chroma/
 reports/
+.DS_Store

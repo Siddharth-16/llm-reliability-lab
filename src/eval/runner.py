@@ -29,7 +29,7 @@ def run_evaluation(dataset_path: str) -> dict:
             rag_output["retrieved_docs"],
         )
         relevance_metrics = evaluate_context_relevance(
-            sample.question,
+            sample,
             rag_output["retrieved_docs"],
         )
 
