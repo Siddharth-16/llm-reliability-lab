@@ -10,17 +10,26 @@ def parse_json_response(response: str) -> dict[str, Any]:
     response = response.strip()
 
     try:
-        return json.loads(response)
+        parsed = json.loads(response)
+        return parsed if isinstance(parsed, dict) else _default_parse_error(response)
     except json.JSONDecodeError:
-        start = response.find("{")
-        end = response.rfind("}")
+        pass
 
-        if start != -1 and end != -1 and end > start:
-            try:
-                return json.loads(response[start : end + 1])
-            except json.JSONDecodeError:
-                pass
+    start = response.find("{")
+    end = response.rfind("}")
 
+    if start != -1 and end != -1 and end > start:
+        candidate = response[start : end + 1]
+        try:
+            parsed = json.loads(candidate)
+            return parsed if isinstance(parsed, dict) else _default_parse_error(response)
+        except json.JSONDecodeError:
+            pass
+
+    return _default_parse_error(response)
+
+
+def _default_parse_error(response: str) -> dict[str, Any]:
     return {
         "score": 0.0,
         "label": "parse_error",
