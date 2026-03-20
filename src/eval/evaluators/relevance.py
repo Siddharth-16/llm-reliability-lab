@@ -25,14 +25,33 @@ Evaluate how relevant the retrieved context is for answering the question.
 Return JSON only.
 """.strip()
 
-def evaluate_context_relevance(question: str, retrieved_docs: list[dict]) -> dict:
-    contexts = [doc["content"] for doc in retrieved_docs]
-    prompt = build_context_relevance_prompt(question, contexts)
-    raw_response = judge_with_llm(prompt)
-    parsed = parse_json_response(raw_response)
+def evaluate_context_relevance(sample, retrieved_docs: list[dict]) -> dict:
+    reference_ids = set(sample.reference_doc_ids or [])
+    retrieved_ids = [doc["metadata"]["doc_id"] for doc in retrieved_docs]
+
+    if not reference_ids:
+        return {
+            "context_relevance": 0.0,
+            "context_relevance_label": "unknown",
+            "context_relevance_reasoning": "No reference_doc_ids available for this sample.",
+        }
+
+    if retrieved_ids and retrieved_ids[0] in reference_ids:
+        return {
+            "context_relevance": 1.0,
+            "context_relevance_label": "relevant",
+            "context_relevance_reasoning": "Top retrieved document matches a reference document.",
+        }
+
+    if any(doc_id in reference_ids for doc_id in retrieved_ids):
+        return {
+            "context_relevance": 0.5,
+            "context_relevance_label": "partially_relevant",
+            "context_relevance_reasoning": "A reference document appears in retrieved results, but not at rank 1.",
+        }
 
     return {
-        "context_relevance": parsed.get("score", 0.0),
-        "context_relevance_label": parsed.get("label", "unknown"),
-        "context_relevance_reasoning": parsed.get("reasoning", ""),
+        "context_relevance": 0.0,
+        "context_relevance_label": "irrelevant",
+        "context_relevance_reasoning": "No retrieved documents match the reference documents.",
     }
